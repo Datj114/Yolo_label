@@ -1,0 +1,1 @@
+index : 1 ,x_candidate: (414, 37), y_candidate: (527, 261) , width: 113 , height: 224
