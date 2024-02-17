@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw Bounding Box</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+    <script>
+        var canvas = new fabric.Canvas('canvas');
+        var rect, isDown, origX, origY;
+
+        canvas.on('mouse:down', function(o) {
+            isDown = true;
+            var pointer = canvas.getPointer(o.e);
+            origX = pointer.x;
+            origY = pointer.y;
+            var pointer = canvas.getPointer(o.e);
+            rect = new fabric.Rect({
+                left: origX,
+                top: origY,
+                originX: 'left',
+                originY: 'top',
+                width: pointer.x-origX,
+                height: pointer.y-origY,
+                angle: 0,
+                fill: 'transparent',
+                stroke: 'red',
+                strokeWidth: 2
+            });
+            canvas.add(rect);
+        });
+
+        canvas.on('mouse:move', function(o) {
+            if (!isDown) return;
+            var pointer = canvas.getPointer(o.e);
+            if(origX>pointer.x){
+                rect.set({
+                    left:pointer.x
+                });
+            }
+            if(origY>pointer.y){
+                rect.set({
+                    top:pointer.y
+                });
+            }
+            rect.set({
+                width: Math.abs(origX - pointer.x),
+                height: Math.abs(origY - pointer.y)
+            });
+            canvas.renderAll();
+        });
+
+        canvas.on('mouse:up', function(o) {
+            isDown = false;
+        });
+    </script>
+</body>
+</html>
