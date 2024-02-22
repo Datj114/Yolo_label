@@ -64,14 +64,14 @@ def upload_folder():
         #     # Ghi dữ liệu vào tệp mới
         #     with open(os.path.join(destination_folder, image), "wb") as new_file:
         #         new_file.write(image_data)
-        for image_path in image_files:
-            # Tạo đường dẫn mới cho tệp ảnh trong thư mục đích
-            new_image_path = os.path.join(
-                destination_folder, os.path.basename(image_path)
-            )
-            # Di chuyển tệp ảnh
-            shutil.move(image_path, new_image_path)
-            return image_files
+        # for image_path in image_files:
+        #     # Tạo đường dẫn mới cho tệp ảnh trong thư mục đích
+        #     new_image_path = os.path.join(
+        #         destination_folder, os.path.basename(image_path)
+        #     )
+        #     # Di chuyển tệp ảnh
+        #     shutil.move(image_path, new_image_path)
+        return image_files
     else:
         st.warning("Please enter a valid folder path.")
         return None
@@ -81,7 +81,7 @@ def upload_folder():
 def create_data_name_file(dictionary, folder_path):
     file_path = os.path.join(folder_path, "data_name.txt")  # nối tệp vs thư mục
     with open(
-        file_path, "w"
+        file_path, "a"
     ) as data_name_file:  # Lặp qua từng cặp chỉ mục - nhãn trong từ điển, ghi thông tin này vào tệp tin "data_name.txt".
         for index, label in dictionary.items():
             data_name_file.write(f"{label} {index} \n")
@@ -267,12 +267,35 @@ def action():
                         st.image(image, caption="Uploaded Image", use_column_width=True)
 
         elif selected == "Open dir":
+            # with col1_a:
+            #     images_uploaded = upload_folder()
+            # if images_uploaded:
+            #     for image_path in images_uploaded:
+            #         with col1_a:
+            #             st.image(image, caption="Uploaded Image", use_column_width=True)
+            #             file_name = os.path.basename(image_path)
+            #             with open(
+            #                 os.path.join(destination_folder, file_name), "wb"
+            #             ) as file:
+            #                 image.save(file)
             with col1_a:
                 images_uploaded = upload_folder()
             if images_uploaded:
-                for image in images_uploaded:
-                    with col2_a:
-                        st.image(image, caption="Uploaded Image", use_column_width=True)
+                for image_path in images_uploaded:
+                    with col1_a:
+                        img = Image.open(image_path)
+                        st.image(img, caption="Uploaded Image", use_column_width=True)
+                        file_name = os.path.basename(image_path)
+                        with open(
+                            os.path.join(destination_folder, file_name), "wb"
+                        ) as file:
+                            img.save(file)
+        #     with col1_a:
+        #         images_uploaded = upload_folder()
+        #     if images_uploaded:
+        #         for image in images_uploaded:
+        #             with col2_a:
+        #                 st.image(image, caption="Uploaded Image", use_column_width=True)
         elif selected == "Label":
             Tools_()
         elif selected == "Add to zip":
