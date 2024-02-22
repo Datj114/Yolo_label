@@ -77,51 +77,6 @@ def upload_folder():
         return None
 
 
-# df = pd.DataFrame(columns=["Image", "Index", "X", "Y", "Width", "Height"])
-
-# Khởi tạo biến toàn cục
-
-
-# def draw_rectangle(event, x, y, flags, param):
-#     global index
-#     img = (param["img"],)
-#     global top_left_pt, bottom_right_pt, drawing
-#     if event == cv2.EVENT_LBUTTONDOWN:
-#         drawing = True
-#         top_left_pt = (x, y)
-
-#     elif event == cv2.EVENT_LBUTTONUP:
-#         drawing = False
-#         bottom_right_pt = (x, y)
-#         # Vẽ bounding box và văn bản lên ảnh
-#         cv2.rectangle(img, top_left_pt, bottom_right_pt, (0, 255, 0), 2)
-#         # text = simpledialog.askstring("Nhập văn bản", "Nhập nội dung:")
-#         #
-#         # cv2.putText(img, text, top_left_pt, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-#         # Hiển thị ảnh với bounding box và văn bản
-#         cv2.imshow("Image with Bounding Box", img)
-
-#         # Lưu thông tin bounding box và văn bản vào một tệp văn bản
-
-
-# def save_info(image, index, top_left_pt, bottom_right_pt):
-#     # Lưu thông tin bounding box vào DataFrame
-#     global df
-#     df = df.append(
-#         {
-#             "Image": image,
-#             "Index": index,
-#             "X": top_left_pt[0],
-#             "Y": top_left_pt[1],
-#             "Width": bottom_right_pt[0] - top_left_pt[0],
-#             "Height": bottom_right_pt[1] - top_left_pt[1],
-#         },
-#         ignore_index=True,
-#     )
-#     return df
-
-
 # Tạo tệp tin tên data_name.txt trong một thư mục được chỉ định
 def create_data_name_file(dictionary, folder_path):
     file_path = os.path.join(folder_path, "data_name.txt")  # nối tệp vs thư mục
@@ -140,20 +95,21 @@ def file_in_folder_path(folder_path, image_path):
 
 
 def create_label_files(
-    file_in_folder_path, index, x_candidate, y_candidate, width, hight
+    file_in_folder_path, index, label_index, x_candidate, y_candidate, width, hight
 ):
     with open(file_in_folder_path, "a") as label_file:
         label_file.write(
-            f"{str(index)} {str(x_candidate)} {str(y_candidate)} {str(width)} {str(hight)}\n"
+            f"{str(index)} {str(label_index)} {str(x_candidate)} {str(y_candidate)} {str(width)} {str(hight)}\n"
         )
 
 
 def draw_and_save(event, x, y, flags, param):
 
     global index
-    text_file_path, dictionary, img = (
+    text_file_path, dictionary, diction_label, img = (
         param["text_file_path"],
         param["dictionary"],
+        param["diction_label"],
         param["img"],
     )
 
@@ -177,9 +133,17 @@ def draw_and_save(event, x, y, flags, param):
                 index = index + 1
                 dictionary[text] = index
 
+            index_label = 0
+            if text not in diction_label:
+                index_label = 0
+            elif text in diction_label:
+                index_label += 1
+            diction_label[text] = index_label
+            label_index = f"{str(text)}{str(diction_label[text])}"
             create_label_files(
                 text_file_path,
                 dictionary.get(text),
+                label_index,
                 top_left_pt[0],
                 top_left_pt[1],
                 abs(bottom_right_pt[0] - top_left_pt[0]),
@@ -226,7 +190,7 @@ def Tools_():
         dict()
     )  # Khởi tạo một từ điển trống để lưu trữ tên và chỉ mục của bounding box
     # Tạo thư mục mới trong thư mục hiện tại
-
+    diction_label = dict()
     folder_Yolo = os.path.join(os.getcwd(), "folder_Yolo")
     create_folder(
         folder_Yolo
@@ -250,7 +214,12 @@ def Tools_():
         drawing = False
         top_left_pt, bottom_right_pt = (-1, -1), (-1, -1)
 
-        param = {"text_file_path": text_file_path, "dictionary": dictionary, "img": img}
+        param = {
+            "text_file_path": text_file_path,
+            "dictionary": dictionary,
+            "diction_label": diction_label,
+            "img": img,
+        }
         cv2.namedWindow("Image with Bounding Box")
         cv2.setMouseCallback("Image with Bounding Box", draw_and_save, param)
 
@@ -271,60 +240,6 @@ def Add():
 
 
 def action():
-    # # Chọn ảnh từ máy tính
-    # st.sidebar.header('st.button')
-
-    # if st.sidebar.button('Open'):
-    #
-    # if st.sidebar.button('Sliner'):
-    #     st.subheader('Range slider')
-
-    #     values = st.slider(
-    #         'Select a range of values',
-    #         0.0, 100.0, (25.0, 75.0))
-    #     st.write('Values:', values)
-    # if st.sidebar.button('line_chart'):
-    #     import pandas as pd
-    #     import numpy as np
-
-    #     st.header('Line chart')
-
-    #     chart_data = pd.DataFrame(
-    #         np.random.randn(20, 3),
-    #         columns=['a', 'b', 'c'])
-
-    #     st.line_chart(chart_data)
-    # if st.sidebar.button('selectbox'):
-    #     option = st.selectbox(
-    #         'What is your favorite color?',
-    #         ('Blue', 'Red', 'Green'))
-
-    #     if option == 'Blue':
-    #         st.write("My favorite color is blue")
-    # if st.sidebar.button('multiselect'):
-    #     options = st.multiselect(
-    #          'What are your favorite colors',
-    #          ['Green', 'Yellow', 'Red', 'Blue'],
-    #          ['Yellow', 'Red'])
-    #     st.write('You selected:', options)
-    # if st.sidebar.button('checkbox'):
-    #     st.title('st.checkbox')
-
-    #     st.write ('What would you like to order?')
-    #     icecream = st.checkbox('Ice cream')
-    #     coffee = st.checkbox('Coffee')
-    #     cola = st.checkbox('Cola')
-
-    #     if icecream:
-    #         st.write("Great! Here's some more 🍦")
-
-    #     if coffee:
-    #         st.write("Okay, here's some coffee ☕")
-
-    #     if cola:
-    #         st.write("Here you go 🥤")
-    # import streamlit as st
-
     # 1. as sidebar menu
     with st.sidebar:
         selected = option_menu(
@@ -336,7 +251,14 @@ def action():
         )
 
         selected
-        if selected == "Open":
+        if selected == "Home":
+            with col1_a:
+                st.write("1.Open giúp mở 1 ảnh hoặc lấy ảnh tử webcame để gán nhãn")
+                st.write("2.Open dir giúp mở 1 folder chứa các ảnh để gán nhãn")
+                st.write("3.Label mở chương trình gán nhãn các ảnh")
+                st.write("4.Add to zip giúp tạo một file zip chứa thông tin gán nhãn")
+
+        elif selected == "Open":
             with col1_a:
                 images_uploaded = upload_image()
             if images_uploaded:
