@@ -1,21 +1,26 @@
 ## Giới thiệu 
 Yolo_label_App là một tool chúng em xây dựng để gán nhãn cho hình ảnh .
 ## Cài Đặt 
-Bước 1 : clone repository về máy : 
+Bước 1 : chọn thư mục muốn clone code và mở terminal tại thư mục đó lên hoặc cd đến thư mục đó !
+Bước 2 : clone repository về máy : 
 ```
 git clone https://github.com/Datj114/Yolo_label
 ```
-Bước 2 : Cài các package yêu cầu : 
+Bước 3 : Cài các package yêu cầu : 
 ```
 pip install -r requirement.txt
 ```
 ## Sử dụng 
   + Mở IDE
   + chọn thư mục, địa chỉ muốn clone về
-  + mở terminal và gõ :
+  + mở terminal tại thư mục muốn lưu và gõ :
       ```
-      streamlit run ....
+     python Yolo_Label_App.py
       ```
+      Sau đó tiếp tục nhập :
+    ```
+    streamlit run Yolo_Label_App.py
+    ```
 ##  chức năng chính : 
 1. **Hiển thị các ảnh**:
 2. **Tạo bouding box** : vẽ bouding box bằng chuột trực tiếp lên các ảnh 
